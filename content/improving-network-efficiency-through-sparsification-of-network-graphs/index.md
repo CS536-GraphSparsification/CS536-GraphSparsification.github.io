@@ -118,6 +118,66 @@ def load_net(file, assign_capacities=False):
     return graph
 ```
 
+# Experimental Pipeline
+
+Graphs are read in to the NetworkX library and analyzed in a Jupyter Notebook. 
+
+```python
+graphs_init = load_graphs(files, test_path, True)
+```
+
+Metrics functions allow us to measure properties of the resulting graphs. For example, this function calculates the longest shortest path endpoints and length (diameter).
+
+```python
+def long_shrt_path(g):
+    shortest_path_iter = nx.all_pairs_dijkstra_path_length(g)
+    max_dist = -1
+    s_t_pair = (None, None)
+    for s_tdict_pair in shortest_path_iter:
+        for t, t_dist in s_tdict_pair[1].items():
+            if t_dist > max_dist:
+                max_dist = t_dist
+                s_t_pair = (s_tdict_pair[0], t)
+    return s_t_pair, max_dist
+```
+
+We evaluate these metrics on the initial graphs in this first notebook.
+
+```python
+metrics_init = calc_metrics(graphs_init)
+```
+
+Then, each sparsification method is run in its own notebook to generate sparsified graphs at a variety of parameter settings and compare the results to the initial graph. 
+
+```python
+graphs_spanner.loc[0, files] = graphs_init
+for f in files:
+    for i, stretch in enumerate(graphs_spanner[parameter_name][1:]):
+        graphs_spanner.at[i+1, f] = sparsifier_g1(graphs_init[f], sparse_method_name, {parameter_name: stretch})
+```
+
+The metrics are recomputed on these sparsified graphs.
+
+```python
+for i in graphs_sparse.index[1:]:
+    metrics_sparse.loc[i, files] = calc_metrics(graphs_sparse.loc[i, files])
+return metrics_sparse
+```
+
+Finally, the results of the series of sparsification parameters for a given method are plotted.
+
+```python
+def lineplot(data, metricName, paramName, infile, outfile, title, ylabel, sparseMethodName):
+    plt.figure()
+    pts = [((1 - md["e_ct"]/data.at[0, infile]["e_ct"])*100, md[metricName]) for md in data[infile]]
+    pts.sort(key = lambda x:x[0])
+    plt.plot([p[0] for p in pts], [p[1] for p in pts], 'o--')
+    plt.title(f"{title} vs Sparsity on {f} {sparseMethodName}")
+    plt.xlabel("edges removed (%)")
+    plt.ylabel(ylabel)
+    plt.savefig(os.path.join(figures_path, f"{outfile}_line_{f}_{sparseMethodName}.png"))
+```
+
 # Some Interesting Findings
 
 - Longest-shortest max flow could be impacted severely or not at all because it is affected by only a single path. Methods such as local degree and local similarity reduced this flow roughly proportional to the edges removed. This relationship was surprising because the majority of edges in the graph do not directly influence this flow. Other methods such as random edge and random node edge caused a greater impact on this metric than on edge count. Spanner, which preserves connectedness, was especially detrimental, providing an example of a disadvantage for this otherwise promising method. Interestingly, no method reduced this metric to a lesser extent than edge count. This is expected to be possible if a method were to identify this worst-case bandwidth path and avoid removing its edges.
