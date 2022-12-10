@@ -15,7 +15,7 @@ A computer network can be represented as an undirected graph, where switches and
 
 Redundant links are sometimes introduced into the network to provide more bandwidth or robustness over failure, but this is pretty expensive and requires routers to have more resources to deal with routing information. We would like to see if we can identify important links in the network, and explore the potential of higher efficiency by using fewer redundant links.
 
-!(Project Summary)[project_summary.png]
+![Project Summary](project_summary.png)
 
 # How?
 
