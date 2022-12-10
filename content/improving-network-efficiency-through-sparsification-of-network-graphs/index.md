@@ -97,6 +97,10 @@ def load_net(file, assign_capacities=False):
 
 # Some Interesting Findings
 
+- Longest-shortest max flow could be impacted severely or not at all because it is affected by only a single path. Methods such as local degree and local similarity reduced this flow roughly proportional to the edges removed. This relationship was surprising because the majority of edges in the graph do not directly influence this flow. Other methods such as random edge and random node edge caused a greater impact on this metric than on edge count. Spanner, which preserves connectedness, was especially detrimental, providing an example of a disadvantage for this otherwise promising method. Interestingly, no method reduced this metric to a lesser extent than edge count. This is expected to be possible if a method were to identify this worst-case bandwidth path and avoid removing its edges.
+  ![Project Summary](long_shrt_max_flow_line_ft48.txt_local_degree.png)
+  ![Project Summary](long_shrt_max_flow_line_ft48.txt_spanner.png)
+
 - Community structure was not preserved in general. The best results on any sparsified graphs were for random edge and scan on the AS datasets, but even then it was only for the gentlest settings that only removed 5 of the edges.
   ![Community Structure](cluster_1.png)
 
