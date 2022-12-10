@@ -48,3 +48,11 @@ We would like to see the how graph sparsification methods work on a real network
 - [Fat-tree](https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf): A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth.
 
 ## … And Bandwidth?
+
+Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize [PeeringDB](https://www.peeringdb.com/)'s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate: 
+
+- The type of business (Video Streaming / CDN) would affect the characteristic of traffic even if the nodes have the same degree;
+- The dataset has only categorial data making methods like linear regression ineffective;
+- The data from PeeringDB is not accurate/up-to-date and a lot of entities chose to not disclose their level of traffic, and abandoned AS also got mixed in.
+
+![AS Degree vs Traffic Level](as_degree_vs_traffic_level.png)
