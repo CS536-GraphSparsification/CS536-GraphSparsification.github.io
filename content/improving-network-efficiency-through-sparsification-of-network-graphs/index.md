@@ -52,23 +52,23 @@ We would like to see the how graph sparsification methods work on a real network
   def generate_fattree(k):
       graph = {} # Representing as an adjacency list
       halfK = k // 2
-      # Core switches: id's 0-(k/2)^2
+      # Core switches: id's 0 - (k / 2) ^ 2
       for i in range(halfK * halfK):
           graph[i] = []
       # Now add in the nodes for every pod
       nextNode = halfK * halfK
       for pod in range(k):
-          # Aggregate switches make up the next k/2
+          # Aggregate switches make up the next k / 2
           # After that, edge switches
           for agg in range(halfK):
               graph[agg + nextNode] = []
               # Add the links from core switches
               for core in range(halfK):
-                  graph[agg*halfK + core].append(agg + nextNode)
+                  graph[agg * halfK + core].append(agg + nextNode)
               # Add the links to edge switches
               for edge in range(halfK):
                   graph[agg + nextNode].append(edge + nextNode + halfK)
-          nextNode = nextNode + halfK*2
+          nextNode = nextNode + halfK * 2
       return graph
   ```
 
