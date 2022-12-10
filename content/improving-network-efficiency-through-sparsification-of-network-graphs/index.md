@@ -29,7 +29,7 @@ Diameter: Distance between the furthest pair of nodes, measured by assigning eac
 - MST (Minimum spanning tree) runtime: The time to perform Kruskal's algorithm on the graph.
 - Community structure: Used Louvain community detection algorithm to identify small, densely connected clusters.
 
-We've experimented a lot of sparsification method, both connectivity-preserving and non-connectivity-preserving:
+We've experimented with a lot of sparsification methods, both connectivity-preserving and non-connectivity-preserving:
 
 - Spielman Srivastava
 - Forest fire
@@ -41,3 +41,10 @@ We've experimented a lot of sparsification method, both connectivity-preserving 
 - Simmelian overlap
 
 # What about datasets?
+
+We would like to see the how graph sparsification methods work on a real network, so we mainly used two datasets:
+
+- [CAIDA AS relationship graph](https://www.caida.org/catalog/datasets/as-relationships/): This is CAIDA's ongoing project since 1998 that measures the Internet's inter-domain structure.
+- [Fat-tree](https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf): A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth.
+
+## … And Bandwidth?
