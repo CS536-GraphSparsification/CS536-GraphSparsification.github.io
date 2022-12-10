@@ -159,9 +159,9 @@ This calls functions from sparsification libraries to sparsify the graphs accord
 
 ```python
 G_nk = nk.nxadapter.nx2nk(G)
-    G_nk.indexEdges()
-    G_nk_sparsified = localDegSparsifier.getSparsifiedGraphOfSize(G_nk, targetRatio)
-    nx_sparsified_graph = nk2nx_fixedlabels(G, G_nk_sparsified)
+G_nk.indexEdges()
+G_nk_sparsified = localDegSparsifier.getSparsifiedGraphOfSize(G_nk, targetRatio)
+nx_sparsified_graph = nk2nx_fixedlabels(G, G_nk_sparsified)
 ```
 
 The metrics are recomputed on these sparsified graphs.
