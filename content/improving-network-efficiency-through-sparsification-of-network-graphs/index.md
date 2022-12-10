@@ -47,13 +47,36 @@ We've experimented with a lot of sparsification methods, both connectivity-prese
 We would like to see the how graph sparsification methods work on a real network, so we mainly used two datasets:
 
 - [CAIDA AS relationship graph](https://www.caida.org/catalog/datasets/as-relationships/): This is CAIDA's ongoing project since 1998 that measures the Internet's inter-domain structure.
-- [Fat-tree](https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf): A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth.
+- [Fat-tree](https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf): A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth. The code for generating K-ary fat-tree is relatively straightforward.
+  ```python
+  def generate_fattree(k):
+      graph = {} # Representing as an adjacency list
+      halfK = k // 2
+      # Core switches: id's 0-(k/2)^2
+      for i in range(halfK * halfK):
+          graph[i] = []
+      # Now add in the nodes for every pod
+      nextNode = halfK * halfK
+      for pod in range(k):
+          # Aggregate switches make up the next k/2
+          # After that, edge switches
+          for agg in range(halfK):
+              graph[agg + nextNode] = []
+              # Add the links from core switches
+              for core in range(halfK):
+                  graph[agg*halfK + core].append(agg + nextNode)
+              # Add the links to edge switches
+              for edge in range(halfK):
+                  graph[agg + nextNode].append(edge + nextNode + halfK)
+          nextNode = nextNode + halfK*2
+      return graph
+  ```
 
 Stanford's [AS-733](https://snap.stanford.edu/data/as-733.html) graph was also used during the testing phase.
 
 ## … And Bandwidth?
 
-Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize [PeeringDB](https://www.peeringdb.com/)'s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate: 
+Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize [PeeringDB](https://www.peeringdb.com/)'s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate:
 
 - The type of business (Video Streaming / CDN) would affect the characteristic of traffic even if the nodes have the same degree;
 - The dataset has only categorial data making methods like linear regression ineffective;
