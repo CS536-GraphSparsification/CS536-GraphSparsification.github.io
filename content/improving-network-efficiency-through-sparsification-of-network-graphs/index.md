@@ -63,6 +63,38 @@ Bandwidth for fat-tree links should be pretty easy to estimate, but this is not 
 
 We end up using degree directly to estimate the traffic of links. Nodes with higher degree indicate that they are likely higher-tier provider ASes, while low-degree nodes are likely low-tier ASes with low traffic level. The rule is described as follows: for AS **A** with degree **a** and AS **B** with degree **b**, the edge between **A** and **B** has `a < b ? a : b` bandwidth. However, this method also has some limitation: some Cloud / VPS provider may provide free peering with customers buying VPS service from them, and degree of this provider AS might be high while customers doesn't really generate a lot of traffic. This would make provider's AS has high degree, which may result in in accurate bandwidth estimation.
 
+Python snippet for loading a graph and assign capacities:
+
+```python
+def load_net(file, assign_capacities=False):
+    graph = None
+    with open(file, 'r') as f:
+        graph = nx.Graph()
+        for line in f:
+            if line.startswith('#'):
+                continue
+
+            if "|" in line:
+                line = line.split("|")
+            else:
+                line = line.split()
+
+            if line[0] != line[1]:
+                graph.add_edge(int(line[0]), int(line[1]))
+
+    if assign_capacities:
+        node_deg = graph.degree()
+        node_deg_dict = {}
+        for node, deg in node_deg:
+            node_deg_dict[node] = deg
+        for u, v in graph.edges():
+            u_deg = node_deg_dict[u]
+            v_deg = node_deg_dict[v]
+            graph.edges[u, v]['capacity'] = v_deg if u_deg > v_deg else u_deg
+
+    return graph
+```
+
 # Some Interesting Findings
 
 
