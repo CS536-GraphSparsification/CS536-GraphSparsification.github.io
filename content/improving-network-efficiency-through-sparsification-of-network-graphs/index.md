@@ -21,15 +21,15 @@ Redundant links are sometimes introduced into the network to provide more bandwi
 
 We would like to use graph sparsification methods to remove edges from existing networks, and use various metrics to identify if the sparsified network graph:
 
-- Edge count: Direct metric for measuring how aggressively sparsified a graph is.
-Diameter: Distance between the furthest pair of nodes, measured by assigning each edge a length of 1.
-- Node and edge connectivity: The minimum number of nodes or edges whose removal is required to disconnect the graph. Measures redundancy.
-- Connectedness: Whether each node is reachable from each other node.
-- Longest-shortest max flow: how much data can be sent through it at any given time.
-- Average max flow: While Longest-Shortest Max Flow measures worst-case bandwidth, this metric aims to capture average bandwidth.
-- PageRank: The relative importance of different nodes in a graph by whether they have edges from other important nodes.
-- MST (Minimum spanning tree) runtime: The time to perform Kruskal's algorithm on the graph.
-- Community structure: Used Louvain community detection algorithm to identify small, densely connected clusters.
+- **Edge count**: Direct metric for measuring how aggressively sparsified a graph is.
+- **Diameter**: Distance between the furthest pair of nodes, measured by assigning each edge a length of 1.
+- **Node and edge connectivity**: The minimum number of nodes or edges whose removal is required to disconnect the graph. Measures redundancy.
+- **Connectedness**: Whether each node is reachable from each other node.
+- **Longest-shortest max flow**: how much data can be sent through it at any given time.
+- **Average max flow**: While Longest-Shortest Max Flow measures worst-case bandwidth, this metric aims to capture average bandwidth.
+- **PageRank**: The relative importance of different nodes in a graph by whether they have edges from other important nodes.
+- **MST (Minimum spanning tree) runtime**: The time to perform Kruskal's algorithm on the graph.
+- **Community structure**: Used Louvain community detection algorithm to identify small, densely connected clusters.
 
 We've experimented with a lot of sparsification methods, both connectivity-preserving and non-connectivity-preserving:
 
@@ -49,6 +49,8 @@ We would like to see the how graph sparsification methods work on a real network
 - [CAIDA AS relationship graph](https://www.caida.org/catalog/datasets/as-relationships/): This is CAIDA's ongoing project since 1998 that measures the Internet's inter-domain structure.
 - [Fat-tree](https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf): A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth.
 
+Stanford's [AS-733](https://snap.stanford.edu/data/as-733.html) graph was also used during the testing phase.
+
 ## … And Bandwidth?
 
 Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize [PeeringDB](https://www.peeringdb.com/)'s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate: 
@@ -58,3 +60,12 @@ Bandwidth for fat-tree links should be pretty easy to estimate, but this is not 
 - The data from PeeringDB is not accurate/up-to-date and a lot of entities chose to not disclose their level of traffic, and abandoned AS also got mixed in.
 
 ![AS Degree vs Traffic Level](as_degree_vs_traffic_level.png)
+
+We end up using degree directly to estimate the traffic of links. Nodes with higher degree indicate that they are likely higher-tier provider ASes, while low-degree nodes are likely low-tier ASes with low traffic level. The rule is described as follows: for AS **A** with degree **a** and AS **B** with degree **b**, the edge between **A** and **B** has `a < b ? a : b` bandwidth. However, this method also has some limitation: some Cloud / VPS provider may provide free peering with customers buying VPS service from them, and degree of this provider AS might be high while customers doesn't really generate a lot of traffic. This would make provider's AS has high degree, which may result in in accurate bandwidth estimation.
+
+# Some Interesting Findings
+
+
+
+# Conclusions
+
