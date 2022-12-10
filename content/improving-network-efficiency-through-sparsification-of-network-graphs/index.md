@@ -147,13 +147,21 @@ We evaluate these metrics on the initial graphs in this first notebook.
 metrics_init = calc_metrics(graphs_init)
 ```
 
-Then, each sparsification method is run in its own notebook to generate sparsified graphs at a variety of parameter settings and compare the results to the initial graph. 
+Then, each sparsification method is run in its own notebook to generate sparsified graphs at a variety of parameter settings.
 
 ```python
-graphs_spanner.loc[0, files] = graphs_init
 for f in files:
     for i, stretch in enumerate(graphs_spanner[parameter_name][1:]):
         graphs_spanner.at[i+1, f] = sparsifier_g1(graphs_init[f], sparse_method_name, {parameter_name: stretch})
+```
+
+This calls functions from sparsification libraries to sparsify the graphs according to the requested sparsification method and the testing spread of the parameters. In this case, the local degree function from the NetworKit library is used.
+
+```python
+G_nk = nk.nxadapter.nx2nk(G)
+    G_nk.indexEdges()
+    G_nk_sparsified = localDegSparsifier.getSparsifiedGraphOfSize(G_nk, targetRatio)
+    nx_sparsified_graph = nk2nx_fixedlabels(G, G_nk_sparsified)
 ```
 
 The metrics are recomputed on these sparsified graphs.
@@ -162,6 +170,18 @@ The metrics are recomputed on these sparsified graphs.
 for i in graphs_sparse.index[1:]:
     metrics_sparse.loc[i, files] = calc_metrics(graphs_sparse.loc[i, files])
 return metrics_sparse
+```
+
+They are also compared to the initial graphs in the case of a few relative metrics.
+
+```python
+for n in metrics_init[f]["rank"]:
+    origRanks.append(metrics_init[f]["rank"][n])
+    sparseRanks.append(metrics_sparse.loc[i+1, f]["rank"][n])
+    rankCorrMatrix = np.corrcoef(np.array(origRanks), np.array(sparseRanks))
+    rankCorr = rankCorrMatrix[0][1]
+    print(f"{f} PageRank correlation {metrics_comp.columns[0]} {metrics_comp.iloc[i, 0]}: {rankCorr}")
+    md_comp["rank_correlation"] = rankCorr
 ```
 
 Finally, the results of the series of sparsification parameters for a given method are plotted.
