@@ -97,7 +97,8 @@ def load_net(file, assign_capacities=False):
 
 # Some Interesting Findings
 
-
+- Community structure was not preserved in general. The best results on any sparsified graphs were for random edge and scan on the AS datasets, but even then it was only for the gentlest settings that only removed $5\%$ of the edges.
+  ![Community Structure](cluster_1.png)
 
 # Conclusions
 
