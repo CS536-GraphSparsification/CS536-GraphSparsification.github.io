@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+Allow: /
+Sitemap: https://cs536-graphsparsification.github.io/sitemap.xml

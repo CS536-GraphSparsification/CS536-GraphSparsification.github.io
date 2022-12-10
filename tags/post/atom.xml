@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title>Graph Sparsification on Networks - Post</title>
+	<subtitle>Just Another CS536 Project</subtitle>
+	<link href="https://cs536-graphsparsification.github.io/tags/post/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://cs536-graphsparsification.github.io/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-12-09T00:00:00+00:00</updated>
+	<id>https://cs536-graphsparsification.github.io/tags/post/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Improving Network Efficiency through Sparsification of Network Graphs</title>
+		<published>2022-12-09T00:00:00+00:00</published>
+		<updated>2022-12-09T00:00:00+00:00</updated>
+		<link rel="alternate" href="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/" type="text/html"/>
+		<id>https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/</id>
+		<content type="html">&lt;h1 id=&quot;background&quot;&gt;Background&lt;&#x2F;h1&gt;
+&lt;p&gt;A computer network can be represented as an undirected graph, where switches and end hosts are nodes and connections enabling data transfer between them are edges. An autonomous system (AS) is a group of connected IP networks that are operated by a single entity, which consists of a lot of switches and end hosts. ASes are interconnected to enable communication between networks. As networks grow, there will be more switches and end hosts within autonomous systems with either wire or wireless connection, and more ASes are registered and interconnected with others with physical links.&lt;&#x2F;p&gt;
+&lt;p&gt;Redundant links are sometimes introduced into the network to provide more bandwidth or robustness over failure, but this is pretty expensive and requires routers to have more resources to deal with routing information. We would like to see if we can identify important links in the network, and explore the potential of higher efficiency by using fewer redundant links.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;cs536-graphsparsification.github.io&#x2F;improving-network-efficiency-through-sparsification-of-network-graphs&#x2F;project_summary.png&quot; alt=&quot;Project Summary&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h1 id=&quot;how&quot;&gt;How?&lt;&#x2F;h1&gt;
+&lt;p&gt;We would like to use graph sparsification methods to remove edges from existing networks, and use various metrics to identify if the sparsified network graph:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Edge count&lt;&#x2F;strong&gt;: Direct metric for measuring how aggressively sparsified a graph is.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Diameter&lt;&#x2F;strong&gt;: Distance between the furthest pair of nodes, measured by assigning each edge a length of 1.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Node and edge connectivity&lt;&#x2F;strong&gt;: The minimum number of nodes or edges whose removal is required to disconnect the graph. Measures redundancy.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Connectedness&lt;&#x2F;strong&gt;: Whether each node is reachable from each other node.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Longest-shortest max flow&lt;&#x2F;strong&gt;: how much data can be sent through it at any given time.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Average max flow&lt;&#x2F;strong&gt;: While Longest-Shortest Max Flow measures worst-case bandwidth, this metric aims to capture average bandwidth.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;PageRank&lt;&#x2F;strong&gt;: The relative importance of different nodes in a graph by whether they have edges from other important nodes.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;MST (Minimum spanning tree) runtime&lt;&#x2F;strong&gt;: The time to perform Kruskal&#x27;s algorithm on the graph.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;strong&gt;Community structure&lt;&#x2F;strong&gt;: Used Louvain community detection algorithm to identify small, densely connected clusters.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;We&#x27;ve experimented with a lot of sparsification methods, both connectivity-preserving and non-connectivity-preserving:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Spielman Srivastava&lt;&#x2F;li&gt;
+&lt;li&gt;Forest fire&lt;&#x2F;li&gt;
+&lt;li&gt;Local degree&lt;&#x2F;li&gt;
+&lt;li&gt;Local similarity&lt;&#x2F;li&gt;
+&lt;li&gt;Random edge&lt;&#x2F;li&gt;
+&lt;li&gt;Random node edge&lt;&#x2F;li&gt;
+&lt;li&gt;Spanner (preserves connectivity)&lt;&#x2F;li&gt;
+&lt;li&gt;Simmelian overlap&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h1 id=&quot;what-about-datasets&quot;&gt;What about datasets?&lt;&#x2F;h1&gt;
+&lt;p&gt;We would like to see the how graph sparsification methods work on a real network, so we mainly used two datasets:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.caida.org&#x2F;catalog&#x2F;datasets&#x2F;as-relationships&#x2F;&quot;&gt;CAIDA AS relationship graph&lt;&#x2F;a&gt;: This is CAIDA&#x27;s ongoing project since 1998 that measures the Internet&#x27;s inter-domain structure.&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.cs.cornell.edu&#x2F;courses&#x2F;cs5413&#x2F;2014fa&#x2F;lectures&#x2F;08-fattree.pdf&quot;&gt;Fat-tree&lt;&#x2F;a&gt;: A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth. The code for generating K-ary fat-tree is relatively straightforward.&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;generate_fattree&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;k&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    graph = {} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Representing as an adjacency list
+&lt;&#x2F;span&gt;&lt;span&gt;    halfK = k &#x2F;&#x2F; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Core switches: id&amp;#39;s 0 - (k &#x2F; 2) ^ 2
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(halfK * halfK):
+&lt;&#x2F;span&gt;&lt;span&gt;        graph[i] = []
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Now add in the nodes for every pod
+&lt;&#x2F;span&gt;&lt;span&gt;    nextNode = halfK * halfK
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;pod &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(k):
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Aggregate switches make up the next k &#x2F; 2
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# After that, edge switches
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;agg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(halfK):
+&lt;&#x2F;span&gt;&lt;span&gt;            graph[agg + nextNode] = []
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Add the links from core switches
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;core &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(halfK):
+&lt;&#x2F;span&gt;&lt;span&gt;                graph[agg * halfK + core].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;append&lt;&#x2F;span&gt;&lt;span&gt;(agg + nextNode)
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a7adba;&quot;&gt;# Add the links to edge switches
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;edge &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(halfK):
+&lt;&#x2F;span&gt;&lt;span&gt;                graph[agg + nextNode].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;append&lt;&#x2F;span&gt;&lt;span&gt;(edge + nextNode + halfK)
+&lt;&#x2F;span&gt;&lt;span&gt;        nextNode = nextNode + halfK * &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;graph
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Stanford&#x27;s &lt;a href=&quot;https:&#x2F;&#x2F;snap.stanford.edu&#x2F;data&#x2F;as-733.html&quot;&gt;AS-733&lt;&#x2F;a&gt; graph was also used during the testing phase.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;and-bandwidth&quot;&gt;… And Bandwidth?&lt;&#x2F;h2&gt;
+&lt;p&gt;Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize &lt;a href=&quot;https:&#x2F;&#x2F;www.peeringdb.com&#x2F;&quot;&gt;PeeringDB&lt;&#x2F;a&gt;&#x27;s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;The type of business (Video Streaming &#x2F; CDN) would affect the characteristic of traffic even if the nodes have the same degree;&lt;&#x2F;li&gt;
+&lt;li&gt;The dataset has only categorial data making methods like linear regression ineffective;&lt;&#x2F;li&gt;
+&lt;li&gt;The data from PeeringDB is not accurate&#x2F;up-to-date and a lot of entities chose to not disclose their level of traffic, and abandoned AS also got mixed in.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;cs536-graphsparsification.github.io&#x2F;improving-network-efficiency-through-sparsification-of-network-graphs&#x2F;as_degree_vs_traffic_level.png&quot; alt=&quot;AS Degree vs Traffic Level&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;We end up using degree directly to estimate the traffic of links. Nodes with higher degree indicate that they are likely higher-tier provider ASes, while low-degree nodes are likely low-tier ASes with low traffic level. The rule is described as follows: for AS &lt;strong&gt;A&lt;&#x2F;strong&gt; with degree &lt;strong&gt;a&lt;&#x2F;strong&gt; and AS &lt;strong&gt;B&lt;&#x2F;strong&gt; with degree &lt;strong&gt;b&lt;&#x2F;strong&gt;, the edge between &lt;strong&gt;A&lt;&#x2F;strong&gt; and &lt;strong&gt;B&lt;&#x2F;strong&gt; has &lt;code&gt;a &amp;lt; b ? a : b&lt;&#x2F;code&gt; bandwidth. However, this method also has some limitation: some Cloud &#x2F; VPS provider may provide free peering with customers buying VPS service from them, and degree of this provider AS might be high while customers doesn&#x27;t really generate a lot of traffic. This would make provider&#x27;s AS has high degree, which may result in in accurate bandwidth estimation.&lt;&#x2F;p&gt;
+&lt;p&gt;Python snippet for loading a graph and assign capacities:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;load_net&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;file&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;assign_capacities&lt;&#x2F;span&gt;&lt;span&gt;=&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;False&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    graph = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(file, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;        graph = nx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Graph&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;line &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;line.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;startswith&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;#&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;):
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;continue
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;|&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; in line:
+&lt;&#x2F;span&gt;&lt;span&gt;                line = line.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;split&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;|&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                line = line.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;split&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;line[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] != line[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]:
+&lt;&#x2F;span&gt;&lt;span&gt;                graph.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add_edge&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;(line[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;]), &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;(line[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]))
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;assign_capacities:
+&lt;&#x2F;span&gt;&lt;span&gt;        node_deg = graph.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;degree&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;        node_deg_dict = {}
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;node, deg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;node_deg:
+&lt;&#x2F;span&gt;&lt;span&gt;            node_deg_dict[node] = deg
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;u, v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;graph.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;edges&lt;&#x2F;span&gt;&lt;span&gt;():
+&lt;&#x2F;span&gt;&lt;span&gt;            u_deg = node_deg_dict[u]
+&lt;&#x2F;span&gt;&lt;span&gt;            v_deg = node_deg_dict[v]
+&lt;&#x2F;span&gt;&lt;span&gt;            graph.edges[u, v][&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;capacity&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;] = v_deg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;u_deg &amp;gt; v_deg &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;u_deg
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;graph
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h1 id=&quot;experimental-pipeline&quot;&gt;Experimental Pipeline&lt;&#x2F;h1&gt;
+&lt;p&gt;Graphs are read in to the NetworkX library and analyzed in a Jupyter Notebook. &lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;graphs_init = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;load_graphs&lt;&#x2F;span&gt;&lt;span&gt;(files, test_path, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;True&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Metrics functions allow us to measure properties of the resulting graphs. For example, this function calculates the longest shortest path endpoints and length (diameter).&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;long_shrt_path&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;g&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    shortest_path_iter = nx.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;all_pairs_dijkstra_path_length&lt;&#x2F;span&gt;&lt;span&gt;(g)
+&lt;&#x2F;span&gt;&lt;span&gt;    max_dist = -&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1
+&lt;&#x2F;span&gt;&lt;span&gt;    s_t_pair = (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;None&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;s_tdict_pair &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;shortest_path_iter:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;t, t_dist &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;s_tdict_pair[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;].&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;items&lt;&#x2F;span&gt;&lt;span&gt;():
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;t_dist &amp;gt; max_dist:
+&lt;&#x2F;span&gt;&lt;span&gt;                max_dist = t_dist
+&lt;&#x2F;span&gt;&lt;span&gt;                s_t_pair = (s_tdict_pair[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;], t)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;s_t_pair, max_dist
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;We evaluate these metrics on the initial graphs in this first notebook.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;metrics_init = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;calc_metrics&lt;&#x2F;span&gt;&lt;span&gt;(graphs_init)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Then, each sparsification method is run in its own notebook to generate sparsified graphs at a variety of parameter settings.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;f &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;files:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;i, stretch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;enumerate&lt;&#x2F;span&gt;&lt;span&gt;(graphs_spanner[parameter_name][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;:]):
+&lt;&#x2F;span&gt;&lt;span&gt;        graphs_spanner.at[i+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, f] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sparsifier_g1&lt;&#x2F;span&gt;&lt;span&gt;(graphs_init[f], sparse_method_name, {parameter_name: stretch})
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This calls functions from sparsification libraries to sparsify the graphs according to the requested sparsification method and the testing spread of the parameters. In this case, the local degree function from the NetworKit library is used.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span&gt;G_nk = nk.nxadapter.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nx2nk&lt;&#x2F;span&gt;&lt;span&gt;(G)
+&lt;&#x2F;span&gt;&lt;span&gt;G_nk.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;indexEdges&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;G_nk_sparsified = localDegSparsifier.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getSparsifiedGraphOfSize&lt;&#x2F;span&gt;&lt;span&gt;(G_nk, targetRatio)
+&lt;&#x2F;span&gt;&lt;span&gt;nx_sparsified_graph = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;nk2nx_fixedlabels&lt;&#x2F;span&gt;&lt;span&gt;(G, G_nk_sparsified)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The metrics are recomputed on these sparsified graphs.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;graphs_sparse.index[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;:]:
+&lt;&#x2F;span&gt;&lt;span&gt;    metrics_sparse.loc[i, files] = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;calc_metrics&lt;&#x2F;span&gt;&lt;span&gt;(graphs_sparse.loc[i, files])
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;metrics_sparse
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;They are also compared to the initial graphs in the case of a few relative metrics.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;n &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;metrics_init[f][&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;]:
+&lt;&#x2F;span&gt;&lt;span&gt;    origRanks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;append&lt;&#x2F;span&gt;&lt;span&gt;(metrics_init[f][&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;][n])
+&lt;&#x2F;span&gt;&lt;span&gt;    sparseRanks.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;append&lt;&#x2F;span&gt;&lt;span&gt;(metrics_sparse.loc[i+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;, f][&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rank&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;][n])
+&lt;&#x2F;span&gt;&lt;span&gt;    rankCorrMatrix = np.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;corrcoef&lt;&#x2F;span&gt;&lt;span&gt;(np.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;array&lt;&#x2F;span&gt;&lt;span&gt;(origRanks), np.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;array&lt;&#x2F;span&gt;&lt;span&gt;(sparseRanks))
+&lt;&#x2F;span&gt;&lt;span&gt;    rankCorr = rankCorrMatrix[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;][&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;{f}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; PageRank correlation &lt;&#x2F;span&gt;&lt;span&gt;{metrics_comp.columns[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;]} {metrics_comp.iloc[i, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;]}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span&gt;{rankCorr}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    md_comp[&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rank_correlation&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;] = rankCorr
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Finally, the results of the series of sparsification parameters for a given method are plotted.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#eff1f5;color:#4f5b66;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;lineplot&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;data&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;metricName&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;paramName&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;infile&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;outfile&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ylabel&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sparseMethodName&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;figure&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;    pts = [((&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span&gt;- md[&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;e_ct&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;]&#x2F;data.at[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, infile][&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;e_ct&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;])*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;, md[metricName]) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;md &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;data[infile]]
+&lt;&#x2F;span&gt;&lt;span&gt;    pts.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;sort&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;lambda &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;:x[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;])
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;plot&lt;&#x2F;span&gt;&lt;span&gt;([p[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;p &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;pts], [p[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;p &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;pts], &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;o--&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;title&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;{title}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; vs Sparsity on &lt;&#x2F;span&gt;&lt;span&gt;{f} {sparseMethodName}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;xlabel&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;edges removed (%)&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ylabel&lt;&#x2F;span&gt;&lt;span&gt;(ylabel)
+&lt;&#x2F;span&gt;&lt;span&gt;    plt.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;savefig&lt;&#x2F;span&gt;&lt;span&gt;(os.path.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;join&lt;&#x2F;span&gt;&lt;span&gt;(figures_path, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;{outfile}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_line_&lt;&#x2F;span&gt;&lt;span&gt;{f}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;_&lt;&#x2F;span&gt;&lt;span&gt;{sparseMethodName}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.png&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h1 id=&quot;some-interesting-findings&quot;&gt;Some Interesting Findings&lt;&#x2F;h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Longest-shortest max flow could be impacted severely or not at all because it is affected by only a single path. Methods such as local degree and local similarity reduced this flow roughly proportional to the edges removed. This relationship was surprising because the majority of edges in the graph do not directly influence this flow. Other methods such as random edge and random node edge caused a greater impact on this metric than on edge count. Spanner, which preserves connectedness, was especially detrimental, providing an example of a disadvantage for this otherwise promising method. Interestingly, no method reduced this metric to a lesser extent than edge count. This is expected to be possible if a method were to identify this worst-case bandwidth path and avoid removing its edges.
+&lt;img src=&quot;https:&#x2F;&#x2F;cs536-graphsparsification.github.io&#x2F;improving-network-efficiency-through-sparsification-of-network-graphs&#x2F;long_shrt_max_flow_line_ft48.txt_local_degree.png&quot; alt=&quot;Project Summary&quot; &#x2F;&gt;
+&lt;img src=&quot;https:&#x2F;&#x2F;cs536-graphsparsification.github.io&#x2F;improving-network-efficiency-through-sparsification-of-network-graphs&#x2F;long_shrt_max_flow_line_ft48.txt_spanner.png&quot; alt=&quot;Project Summary&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Community structure was not preserved in general. The best results on any sparsified graphs were for random edge and scan on the AS datasets, but even then it was only for the gentlest settings that only removed 5 of the edges.
+&lt;img src=&quot;https:&#x2F;&#x2F;cs536-graphsparsification.github.io&#x2F;improving-network-efficiency-through-sparsification-of-network-graphs&#x2F;cluster_1.png&quot; alt=&quot;Community Structure&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h1 id=&quot;conclusions&quot;&gt;Conclusions&lt;&#x2F;h1&gt;
+&lt;p&gt;In this study, we found that sparsification methods were able to significantly reduce the number of edges in computer networks. However, this reduction came at the expense of performance-critical metrics. Therefore, the development of sparsification methods that prioritize network performance could be beneficial for future research in this area. Of the methods tested, only spanner preserved connectedness. Methods that specifically avoid removing edges that represent essential connections or flow bottlenecks could improve upon the results of this work.&lt;&#x2F;p&gt;
+&lt;p&gt;In future work, we plan to model the computer networks as directed graphs and conduct similar studies. This would be an interesting problem from a graph theory perspective, as the literature on sparsification algorithms for directed graphs is currently limited. Additionally, we plan to virtualize the networks studied here and simulate network traffic to gain a better understanding of the impact of sparsification in real-world scenarios.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>

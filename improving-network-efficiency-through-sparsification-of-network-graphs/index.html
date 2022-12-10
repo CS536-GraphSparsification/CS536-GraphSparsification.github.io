@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+<title>Improving Network Efficiency through Sparsification of Network Graphs | Graph Sparsification on Networks</title>
+
+
+
+<meta property="og:title" content="Improving Network Efficiency through Sparsification of Network Graphs">
+
+
+
+<meta name="author" content="Abhijeet, Dante, Deepak, Reed, and Zicheng">
+
+
+<meta property="og:locale" content="en_US">
+
+
+<meta name="description" content="Just Another CS536 Project">
+<meta property="og:description" content="Just Another CS536 Project">
+
+
+
+<link rel="canonical" href="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/">
+<meta property="og:url" content="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/">
+
+
+
+<meta property="og:site_name" content="Graph Sparsification on Networks" />
+
+
+
+
+
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="2022-12-09T00:00:00+00:00">
+
+
+
+
+
+
+
+  <meta name="twitter:card" content="summary">
+
+
+
+  <meta property="twitter:title" content="Improving Network Efficiency through Sparsification of Network Graphs">
+
+
+
+
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+<script type="application/ld+json">
+{
+  "author": {
+    "@type":"Person",
+	  "name":"Abhijeet, Dante, Deepak, Reed, and Zicheng",
+  },
+  "description": "Just Another CS536 Project",
+  "url": "https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/",
+  "@context":"https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Improving Network Efficiency through Sparsification of Network Graphs"
+  
+    
+    
+      "datePublished":"2022-12-09T00:00:00+00:00",
+    
+    "mainEntityOfPage":{
+      "@type":"WebPage",
+      "@id":"https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/"
+    },
+  
+}
+</script>
+
+  <link rel="stylesheet" href="https://cs536-graphsparsification.github.io/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cs536-graphsparsification.github.io/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://cs536-graphsparsification.github.io/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cs536-graphsparsification.github.io/assets/apple-touch-icon.png">
+
+  
+    <link type="application/atom+xml" rel="alternate" href="https://cs536-graphsparsification.github.io/atom.xml" title="Graph Sparsification on Networks" />
+  
+
+  
+
+  
+  
+</head>
+
+<body>
+  
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="https://cs536-graphsparsification.github.io/">
+        <h2 class="nav-title">Graph Sparsification on Networks</h2>
+      </a>
+      <ul>
+        
+          
+            <li><a href="https://cs536-graphsparsification.github.io">Posts</a></li>
+          
+            <li><a href="https://cs536-graphsparsification.github.io/tags">Tags</a></li>
+          
+            <li><a href="https://cs536-graphsparsification.github.io/about">About</a></li>
+          
+        
+      </ul>
+    </div>
+  </nav>
+  
+
+  <main>
+    
+  <div class="post">
+  	<div class="post-info">
+  		<span>Written by</span> Abhijeet, Dante, Deepak, Reed, and Zicheng<br>
+  		
+  		<span>on&nbsp;</span><time datetime="2022-12-09T00:00:00+00:00">December  9, 2022</time>
+  	</div>
+  	<h1 class="post-title">Improving Network Efficiency through Sparsification of Network Graphs</h1>
+  	<div class="post-line"></div>
+  	<h1 id="background">Background</h1>
+<p>A computer network can be represented as an undirected graph, where switches and end hosts are nodes and connections enabling data transfer between them are edges. An autonomous system (AS) is a group of connected IP networks that are operated by a single entity, which consists of a lot of switches and end hosts. ASes are interconnected to enable communication between networks. As networks grow, there will be more switches and end hosts within autonomous systems with either wire or wireless connection, and more ASes are registered and interconnected with others with physical links.</p>
+<p>Redundant links are sometimes introduced into the network to provide more bandwidth or robustness over failure, but this is pretty expensive and requires routers to have more resources to deal with routing information. We would like to see if we can identify important links in the network, and explore the potential of higher efficiency by using fewer redundant links.</p>
+<p><img src="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/project_summary.png" alt="Project Summary" /></p>
+<h1 id="how">How?</h1>
+<p>We would like to use graph sparsification methods to remove edges from existing networks, and use various metrics to identify if the sparsified network graph:</p>
+<ul>
+<li><strong>Edge count</strong>: Direct metric for measuring how aggressively sparsified a graph is.</li>
+<li><strong>Diameter</strong>: Distance between the furthest pair of nodes, measured by assigning each edge a length of 1.</li>
+<li><strong>Node and edge connectivity</strong>: The minimum number of nodes or edges whose removal is required to disconnect the graph. Measures redundancy.</li>
+<li><strong>Connectedness</strong>: Whether each node is reachable from each other node.</li>
+<li><strong>Longest-shortest max flow</strong>: how much data can be sent through it at any given time.</li>
+<li><strong>Average max flow</strong>: While Longest-Shortest Max Flow measures worst-case bandwidth, this metric aims to capture average bandwidth.</li>
+<li><strong>PageRank</strong>: The relative importance of different nodes in a graph by whether they have edges from other important nodes.</li>
+<li><strong>MST (Minimum spanning tree) runtime</strong>: The time to perform Kruskal's algorithm on the graph.</li>
+<li><strong>Community structure</strong>: Used Louvain community detection algorithm to identify small, densely connected clusters.</li>
+</ul>
+<p>We've experimented with a lot of sparsification methods, both connectivity-preserving and non-connectivity-preserving:</p>
+<ul>
+<li>Spielman Srivastava</li>
+<li>Forest fire</li>
+<li>Local degree</li>
+<li>Local similarity</li>
+<li>Random edge</li>
+<li>Random node edge</li>
+<li>Spanner (preserves connectivity)</li>
+<li>Simmelian overlap</li>
+</ul>
+<h1 id="what-about-datasets">What about datasets?</h1>
+<p>We would like to see the how graph sparsification methods work on a real network, so we mainly used two datasets:</p>
+<ul>
+<li><a href="https://www.caida.org/catalog/datasets/as-relationships/">CAIDA AS relationship graph</a>: This is CAIDA's ongoing project since 1998 that measures the Internet's inter-domain structure.</li>
+<li><a href="https://www.cs.cornell.edu/courses/cs5413/2014fa/lectures/08-fattree.pdf">Fat-tree</a>: A network topology used in data centers that scales well, with redundancy and high east-west traffic bandwidth. The code for generating K-ary fat-tree is relatively straightforward.<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">generate_fattree</span><span>(</span><span style="color:#bf616a;">k</span><span>):
+</span><span>    graph = {} </span><span style="color:#a7adba;"># Representing as an adjacency list
+</span><span>    halfK = k // </span><span style="color:#d08770;">2
+</span><span>    </span><span style="color:#a7adba;"># Core switches: id&#39;s 0 - (k / 2) ^ 2
+</span><span>    </span><span style="color:#b48ead;">for </span><span>i </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(halfK * halfK):
+</span><span>        graph[i] = []
+</span><span>    </span><span style="color:#a7adba;"># Now add in the nodes for every pod
+</span><span>    nextNode = halfK * halfK
+</span><span>    </span><span style="color:#b48ead;">for </span><span>pod </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(k):
+</span><span>        </span><span style="color:#a7adba;"># Aggregate switches make up the next k / 2
+</span><span>        </span><span style="color:#a7adba;"># After that, edge switches
+</span><span>        </span><span style="color:#b48ead;">for </span><span>agg </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(halfK):
+</span><span>            graph[agg + nextNode] = []
+</span><span>            </span><span style="color:#a7adba;"># Add the links from core switches
+</span><span>            </span><span style="color:#b48ead;">for </span><span>core </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(halfK):
+</span><span>                graph[agg * halfK + core].</span><span style="color:#bf616a;">append</span><span>(agg + nextNode)
+</span><span>            </span><span style="color:#a7adba;"># Add the links to edge switches
+</span><span>            </span><span style="color:#b48ead;">for </span><span>edge </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(halfK):
+</span><span>                graph[agg + nextNode].</span><span style="color:#bf616a;">append</span><span>(edge + nextNode + halfK)
+</span><span>        nextNode = nextNode + halfK * </span><span style="color:#d08770;">2
+</span><span>    </span><span style="color:#b48ead;">return </span><span>graph
+</span></code></pre>
+</li>
+</ul>
+<p>Stanford's <a href="https://snap.stanford.edu/data/as-733.html">AS-733</a> graph was also used during the testing phase.</p>
+<h2 id="and-bandwidth">… And Bandwidth?</h2>
+<p>Bandwidth for fat-tree links should be pretty easy to estimate, but this is not the case for links between ASes. We initially plans to utilize <a href="https://www.peeringdb.com/">PeeringDB</a>'s degree and traffic level to estimate the bandwidth (with some simple machine learning technique), but it turns out that the result is pretty inaccurate:</p>
+<ul>
+<li>The type of business (Video Streaming / CDN) would affect the characteristic of traffic even if the nodes have the same degree;</li>
+<li>The dataset has only categorial data making methods like linear regression ineffective;</li>
+<li>The data from PeeringDB is not accurate/up-to-date and a lot of entities chose to not disclose their level of traffic, and abandoned AS also got mixed in.</li>
+</ul>
+<p><img src="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/as_degree_vs_traffic_level.png" alt="AS Degree vs Traffic Level" /></p>
+<p>We end up using degree directly to estimate the traffic of links. Nodes with higher degree indicate that they are likely higher-tier provider ASes, while low-degree nodes are likely low-tier ASes with low traffic level. The rule is described as follows: for AS <strong>A</strong> with degree <strong>a</strong> and AS <strong>B</strong> with degree <strong>b</strong>, the edge between <strong>A</strong> and <strong>B</strong> has <code>a &lt; b ? a : b</code> bandwidth. However, this method also has some limitation: some Cloud / VPS provider may provide free peering with customers buying VPS service from them, and degree of this provider AS might be high while customers doesn't really generate a lot of traffic. This would make provider's AS has high degree, which may result in in accurate bandwidth estimation.</p>
+<p>Python snippet for loading a graph and assign capacities:</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">load_net</span><span>(</span><span style="color:#bf616a;">file</span><span>, </span><span style="color:#bf616a;">assign_capacities</span><span>=</span><span style="color:#d08770;">False</span><span>):
+</span><span>    graph = </span><span style="color:#d08770;">None
+</span><span>    </span><span style="color:#b48ead;">with </span><span style="color:#96b5b4;">open</span><span>(file, &#39;</span><span style="color:#a3be8c;">r</span><span>&#39;) </span><span style="color:#b48ead;">as </span><span>f:
+</span><span>        graph = nx.</span><span style="color:#bf616a;">Graph</span><span>()
+</span><span>        </span><span style="color:#b48ead;">for </span><span>line </span><span style="color:#b48ead;">in </span><span>f:
+</span><span>            </span><span style="color:#b48ead;">if </span><span>line.</span><span style="color:#bf616a;">startswith</span><span>(&#39;</span><span style="color:#a3be8c;">#</span><span>&#39;):
+</span><span>                </span><span style="color:#b48ead;">continue
+</span><span>
+</span><span>            </span><span style="color:#b48ead;">if </span><span>&quot;</span><span style="color:#a3be8c;">|</span><span>&quot; in line:
+</span><span>                line = line.</span><span style="color:#bf616a;">split</span><span>(&quot;</span><span style="color:#a3be8c;">|</span><span>&quot;)
+</span><span>            </span><span style="color:#b48ead;">else</span><span>:
+</span><span>                line = line.</span><span style="color:#bf616a;">split</span><span>()
+</span><span>
+</span><span>            </span><span style="color:#b48ead;">if </span><span>line[</span><span style="color:#d08770;">0</span><span>] != line[</span><span style="color:#d08770;">1</span><span>]:
+</span><span>                graph.</span><span style="color:#bf616a;">add_edge</span><span>(</span><span style="color:#bf616a;">int</span><span>(line[</span><span style="color:#d08770;">0</span><span>]), </span><span style="color:#bf616a;">int</span><span>(line[</span><span style="color:#d08770;">1</span><span>]))
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>assign_capacities:
+</span><span>        node_deg = graph.</span><span style="color:#bf616a;">degree</span><span>()
+</span><span>        node_deg_dict = {}
+</span><span>        </span><span style="color:#b48ead;">for </span><span>node, deg </span><span style="color:#b48ead;">in </span><span>node_deg:
+</span><span>            node_deg_dict[node] = deg
+</span><span>        </span><span style="color:#b48ead;">for </span><span>u, v </span><span style="color:#b48ead;">in </span><span>graph.</span><span style="color:#bf616a;">edges</span><span>():
+</span><span>            u_deg = node_deg_dict[u]
+</span><span>            v_deg = node_deg_dict[v]
+</span><span>            graph.edges[u, v][&#39;</span><span style="color:#a3be8c;">capacity</span><span>&#39;] = v_deg </span><span style="color:#b48ead;">if </span><span>u_deg &gt; v_deg </span><span style="color:#b48ead;">else </span><span>u_deg
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">return </span><span>graph
+</span></code></pre>
+<h1 id="experimental-pipeline">Experimental Pipeline</h1>
+<p>Graphs are read in to the NetworkX library and analyzed in a Jupyter Notebook. </p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>graphs_init = </span><span style="color:#bf616a;">load_graphs</span><span>(files, test_path, </span><span style="color:#d08770;">True</span><span>)
+</span></code></pre>
+<p>Metrics functions allow us to measure properties of the resulting graphs. For example, this function calculates the longest shortest path endpoints and length (diameter).</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">long_shrt_path</span><span>(</span><span style="color:#bf616a;">g</span><span>):
+</span><span>    shortest_path_iter = nx.</span><span style="color:#bf616a;">all_pairs_dijkstra_path_length</span><span>(g)
+</span><span>    max_dist = -</span><span style="color:#d08770;">1
+</span><span>    s_t_pair = (</span><span style="color:#d08770;">None</span><span>, </span><span style="color:#d08770;">None</span><span>)
+</span><span>    </span><span style="color:#b48ead;">for </span><span>s_tdict_pair </span><span style="color:#b48ead;">in </span><span>shortest_path_iter:
+</span><span>        </span><span style="color:#b48ead;">for </span><span>t, t_dist </span><span style="color:#b48ead;">in </span><span>s_tdict_pair[</span><span style="color:#d08770;">1</span><span>].</span><span style="color:#bf616a;">items</span><span>():
+</span><span>            </span><span style="color:#b48ead;">if </span><span>t_dist &gt; max_dist:
+</span><span>                max_dist = t_dist
+</span><span>                s_t_pair = (s_tdict_pair[</span><span style="color:#d08770;">0</span><span>], t)
+</span><span>    </span><span style="color:#b48ead;">return </span><span>s_t_pair, max_dist
+</span></code></pre>
+<p>We evaluate these metrics on the initial graphs in this first notebook.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>metrics_init = </span><span style="color:#bf616a;">calc_metrics</span><span>(graphs_init)
+</span></code></pre>
+<p>Then, each sparsification method is run in its own notebook to generate sparsified graphs at a variety of parameter settings.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>f </span><span style="color:#b48ead;">in </span><span>files:
+</span><span>    </span><span style="color:#b48ead;">for </span><span>i, stretch </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">enumerate</span><span>(graphs_spanner[parameter_name][</span><span style="color:#d08770;">1</span><span>:]):
+</span><span>        graphs_spanner.at[i+</span><span style="color:#d08770;">1</span><span>, f] = </span><span style="color:#bf616a;">sparsifier_g1</span><span>(graphs_init[f], sparse_method_name, {parameter_name: stretch})
+</span></code></pre>
+<p>This calls functions from sparsification libraries to sparsify the graphs according to the requested sparsification method and the testing spread of the parameters. In this case, the local degree function from the NetworKit library is used.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span>G_nk = nk.nxadapter.</span><span style="color:#bf616a;">nx2nk</span><span>(G)
+</span><span>G_nk.</span><span style="color:#bf616a;">indexEdges</span><span>()
+</span><span>G_nk_sparsified = localDegSparsifier.</span><span style="color:#bf616a;">getSparsifiedGraphOfSize</span><span>(G_nk, targetRatio)
+</span><span>nx_sparsified_graph = </span><span style="color:#bf616a;">nk2nx_fixedlabels</span><span>(G, G_nk_sparsified)
+</span></code></pre>
+<p>The metrics are recomputed on these sparsified graphs.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>i </span><span style="color:#b48ead;">in </span><span>graphs_sparse.index[</span><span style="color:#d08770;">1</span><span>:]:
+</span><span>    metrics_sparse.loc[i, files] = </span><span style="color:#bf616a;">calc_metrics</span><span>(graphs_sparse.loc[i, files])
+</span><span style="color:#b48ead;">return </span><span>metrics_sparse
+</span></code></pre>
+<p>They are also compared to the initial graphs in the case of a few relative metrics.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">for </span><span>n </span><span style="color:#b48ead;">in </span><span>metrics_init[f][&quot;</span><span style="color:#a3be8c;">rank</span><span>&quot;]:
+</span><span>    origRanks.</span><span style="color:#bf616a;">append</span><span>(metrics_init[f][&quot;</span><span style="color:#a3be8c;">rank</span><span>&quot;][n])
+</span><span>    sparseRanks.</span><span style="color:#bf616a;">append</span><span>(metrics_sparse.loc[i+</span><span style="color:#d08770;">1</span><span>, f][&quot;</span><span style="color:#a3be8c;">rank</span><span>&quot;][n])
+</span><span>    rankCorrMatrix = np.</span><span style="color:#bf616a;">corrcoef</span><span>(np.</span><span style="color:#bf616a;">array</span><span>(origRanks), np.</span><span style="color:#bf616a;">array</span><span>(sparseRanks))
+</span><span>    rankCorr = rankCorrMatrix[</span><span style="color:#d08770;">0</span><span>][</span><span style="color:#d08770;">1</span><span>]
+</span><span>    </span><span style="color:#96b5b4;">print</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{f}</span><span style="color:#a3be8c;"> PageRank correlation </span><span>{metrics_comp.columns[</span><span style="color:#d08770;">0</span><span>]} {metrics_comp.iloc[i, </span><span style="color:#d08770;">0</span><span>]}</span><span style="color:#a3be8c;">: </span><span>{rankCorr}&quot;)
+</span><span>    md_comp[&quot;</span><span style="color:#a3be8c;">rank_correlation</span><span>&quot;] = rankCorr
+</span></code></pre>
+<p>Finally, the results of the series of sparsification parameters for a given method are plotted.</p>
+<pre data-lang="python" style="background-color:#eff1f5;color:#4f5b66;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">lineplot</span><span>(</span><span style="color:#bf616a;">data</span><span>, </span><span style="color:#bf616a;">metricName</span><span>, </span><span style="color:#bf616a;">paramName</span><span>, </span><span style="color:#bf616a;">infile</span><span>, </span><span style="color:#bf616a;">outfile</span><span>, </span><span style="color:#bf616a;">title</span><span>, </span><span style="color:#bf616a;">ylabel</span><span>, </span><span style="color:#bf616a;">sparseMethodName</span><span>):
+</span><span>    plt.</span><span style="color:#bf616a;">figure</span><span>()
+</span><span>    pts = [((</span><span style="color:#d08770;">1 </span><span>- md[&quot;</span><span style="color:#a3be8c;">e_ct</span><span>&quot;]/data.at[</span><span style="color:#d08770;">0</span><span>, infile][&quot;</span><span style="color:#a3be8c;">e_ct</span><span>&quot;])*</span><span style="color:#d08770;">100</span><span>, md[metricName]) </span><span style="color:#b48ead;">for </span><span>md </span><span style="color:#b48ead;">in </span><span>data[infile]]
+</span><span>    pts.</span><span style="color:#bf616a;">sort</span><span>(</span><span style="color:#bf616a;">key </span><span>= </span><span style="color:#b48ead;">lambda </span><span style="color:#bf616a;">x</span><span>:x[</span><span style="color:#d08770;">0</span><span>])
+</span><span>    plt.</span><span style="color:#bf616a;">plot</span><span>([p[</span><span style="color:#d08770;">0</span><span>] </span><span style="color:#b48ead;">for </span><span>p </span><span style="color:#b48ead;">in </span><span>pts], [p[</span><span style="color:#d08770;">1</span><span>] </span><span style="color:#b48ead;">for </span><span>p </span><span style="color:#b48ead;">in </span><span>pts], &#39;</span><span style="color:#a3be8c;">o--</span><span>&#39;)
+</span><span>    plt.</span><span style="color:#bf616a;">title</span><span>(</span><span style="color:#b48ead;">f</span><span>&quot;{title}</span><span style="color:#a3be8c;"> vs Sparsity on </span><span>{f} {sparseMethodName}&quot;)
+</span><span>    plt.</span><span style="color:#bf616a;">xlabel</span><span>(&quot;</span><span style="color:#a3be8c;">edges removed (%)</span><span>&quot;)
+</span><span>    plt.</span><span style="color:#bf616a;">ylabel</span><span>(ylabel)
+</span><span>    plt.</span><span style="color:#bf616a;">savefig</span><span>(os.path.</span><span style="color:#bf616a;">join</span><span>(figures_path, </span><span style="color:#b48ead;">f</span><span>&quot;{outfile}</span><span style="color:#a3be8c;">_line_</span><span>{f}</span><span style="color:#a3be8c;">_</span><span>{sparseMethodName}</span><span style="color:#a3be8c;">.png</span><span>&quot;))
+</span></code></pre>
+<h1 id="some-interesting-findings">Some Interesting Findings</h1>
+<ul>
+<li>
+<p>Longest-shortest max flow could be impacted severely or not at all because it is affected by only a single path. Methods such as local degree and local similarity reduced this flow roughly proportional to the edges removed. This relationship was surprising because the majority of edges in the graph do not directly influence this flow. Other methods such as random edge and random node edge caused a greater impact on this metric than on edge count. Spanner, which preserves connectedness, was especially detrimental, providing an example of a disadvantage for this otherwise promising method. Interestingly, no method reduced this metric to a lesser extent than edge count. This is expected to be possible if a method were to identify this worst-case bandwidth path and avoid removing its edges.
+<img src="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/long_shrt_max_flow_line_ft48.txt_local_degree.png" alt="Project Summary" />
+<img src="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/long_shrt_max_flow_line_ft48.txt_spanner.png" alt="Project Summary" /></p>
+</li>
+<li>
+<p>Community structure was not preserved in general. The best results on any sparsified graphs were for random edge and scan on the AS datasets, but even then it was only for the gentlest settings that only removed 5 of the edges.
+<img src="https://cs536-graphsparsification.github.io/improving-network-efficiency-through-sparsification-of-network-graphs/cluster_1.png" alt="Community Structure" /></p>
+</li>
+</ul>
+<h1 id="conclusions">Conclusions</h1>
+<p>In this study, we found that sparsification methods were able to significantly reduce the number of edges in computer networks. However, this reduction came at the expense of performance-critical metrics. Therefore, the development of sparsification methods that prioritize network performance could be beneficial for future research in this area. Of the methods tested, only spanner preserved connectedness. Methods that specifically avoid removing edges that represent essential connections or flow bottlenecks could improve upon the results of this work.</p>
+<p>In future work, we plan to model the computer networks as directed graphs and conduct similar studies. This would be an interesting problem from a graph theory perspective, as the literature on sparsification algorithms for directed graphs is currently limited. Additionally, we plan to virtualize the networks studied here and simulate network traffic to gain a better understanding of the impact of sparsification in real-world scenarios.</p>
+
+  </div>
+
+	
+
+  <div class="pagination">
+  	
+		<a href="#" class="top">Top</a>
+		
+  </div>
+
+  </main>
+
+  
+  <footer>
+    <span>&copy; <time datetime="2022-12-10T05:01:59.473411937+00:00">2022</time> Abhijeet, Dante, Deepak, Reed, and Zicheng. Made with <a href="https://www.getzola.org">Zola</a> with <a href="https://github.com/aaranxu/tale-zola">Tala-Zola</a> theme.</span>
+  </footer>
+  
+</body>
+</html>
