@@ -69,3 +69,6 @@ We end up using degree directly to estimate the traffic of links. Nodes with hig
 
 # Conclusions
 
+In this study, we found that sparsification methods were able to significantly reduce the number of edges in computer networks. However, this reduction came at the expense of performance-critical metrics. Therefore, the development of sparsification methods that prioritize network performance could be beneficial for future research in this area. Of the methods tested, only spanner preserved connectedness. Methods that specifically avoid removing edges that represent essential connections or flow bottlenecks could improve upon the results of this work.
+
+In future work, we plan to model the computer networks as directed graphs and conduct similar studies. This would be an interesting problem from a graph theory perspective, as the literature on sparsification algorithms for directed graphs is currently limited. Additionally, we plan to virtualize the networks studied here and simulate network traffic to gain a better understanding of the impact of sparsification in real-world scenarios.
